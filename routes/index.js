@@ -1,6 +1,7 @@
-const express = require("express");
+import express from "express";
 const indexRouter = express.Router();
+import productRouter from './routes/api/productRouter';
 
 // Api
-indexRouter.use('/api', require('./api'));
-module.exports = indexRouter;
+indexRouter.use('/api/products', productRouter);
+export default indexRouter;
