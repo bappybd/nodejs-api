@@ -2,11 +2,16 @@ import express from "express";
 import mongoose from "mongoose";
 import bodyParser from "body-parser";
 import cors from "cors";
+import fs from "fs";
+import path from "path";
 import paginate from "express-paginate";
 
 // Create the server app
 const port = process.env.PORT || 5656;
 const app = express();
+
+// Read configurations
+let config = JSON.parse(fs.readFileSync(path.join(__dirname, './config', 'settings.json'), 'utf8'));
 
 // Use CORS
 app.use(cors());
@@ -15,7 +20,7 @@ app.use(cors());
 app.use(paginate.middleware(10, 50));
 
 // Connect to Database
-mongoose.connect("mongodb://localhost/invoiceTest");
+mongoose.connect(config.dbConnectionString);
 mongoose.set('debug', true);
 
 // Body Parser 
