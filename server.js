@@ -1,13 +1,18 @@
 import express from "express";
 import mongoose from "mongoose";
 import bodyParser from "body-parser";
+import cors from "cors";
+import paginate from "express-paginate";
 
 // Create the server app
 const port = process.env.PORT || 5656;
 const app = express();
 
-// Models
-require("./models/Product");
+// Use CORS
+app.use(cors());
+
+// Paginate
+app.use(paginate.middleware(10, 50));
 
 // Connect to Database
 mongoose.connect("mongodb://localhost/invoiceTest");
@@ -17,13 +22,20 @@ mongoose.set('debug', true);
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 
+require('./config/passport');
+
 // routes
 app.get('/', (req, res) => {
     res.json({data: 'Hello World'});
 });
+import userRouter from './routes/api/userRouter';
+app.use('/api/users', userRouter);
 
 import productRouter from './routes/api/productRouter';
 app.use('/api/products', productRouter);
+
+import categoryRouter from './routes/api/categoryRouter';
+app.use('/api/categories', categoryRouter);
 
 // Catch 404 and forward to error handler
 app.use(function(req, res, next){

@@ -12,6 +12,8 @@
  - show dbs;
  - use invoiceTest;
  - db.createCollection("products");
+ - db.createCollection("categories");
+ - db.createCollection("users");
 
 ## Server Installtion
  - npm install
