@@ -29,7 +29,7 @@ app.use(bodyParser.urlencoded({ extended: true }));
 
 require('./config/passport');
 
-// routes
+// Routes start
 app.get('/', (req, res) => {
     res.json({data: 'Hello World'});
 });
@@ -48,6 +48,7 @@ app.use(function(req, res, next){
     err.status = 404;
     next(err);
 });
+// End Routes
 
 // Start the server at port defined above
 app.listen(port, () => {
