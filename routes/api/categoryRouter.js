@@ -17,6 +17,11 @@ categoryRouter.route('/')
     });
 
 categoryRouter.route('/:categoryId')
+    .get((req, res) => {
+        Category.findById(req.params.categoryId, (err, category) => {
+            res.json(category);
+        });
+    })
    .put((req, res) => {
         Category.findById(req.params.categoryId, (err, category) => {
             category.title = req.body.title;

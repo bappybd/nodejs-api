@@ -1,56 +1,40 @@
 import express from "express";
-const productRouter = express.Router();
+const articleRouter = express.Router();
 import mongoose from "mongoose";
 import auth from "../auth";
 import faker from "faker";
+import Article from "../../models/Article";
 import User from "../../models/User";
-import Product from "../../models/Product";
-import Category from "../../models/Category";
 import ApiResponse from "../../models/ApiResponse";
 
-productRouter.post('/', auth.required, (req, res, next) => {
+articleRouter.post('/', auth.required, (req, res, next) => {
         User.findById(req.payload.id).then(function(user){
             console.log(req.body);
             if(!req.body.title){
                 return res.status(422).json({errors: {title: "can't be blank."}});
             }
-            if(!req.body.price){
+            if(!req.body.body){
                 return res.status(422).json({errors: {price: "can't be blank."}});
             }
 
-            let product = new Product({title: req.body.title, desc: req.body.desc, price: req.body.price});
-            return product.save().then(function () {
-                res.status(201).json({product: product });
+            let article = new Article({title: req.body.title, body: req.body.description, description: req.body.description});
+            article.author = user;
+            return article.save().then(function () {
+                res.status(201).json({ article: article });
             });
         }).catch(next);
     });
 
 productRouter.route('/:productId')
-   .put((req, res, next) => {
-       Promise.all([
-           req.payload ? User.findById(req.payload.id) : null,
-           req.params.productId ? Product.findById(req.params.productId) : null,
-           req.body.category_id ? Category.findById(req.body.category_id) : null,
-       ]).then(function(results){
-           var user = results[0];
-           var product = results[1];
-           var category = results[2];
-           console.log(results);
+   .put((req, res) => {
+        Product.findById(req.params.productId, (err, product) => {
+            product.title = req.body.title;
+            product.desc = req.body.desc;
+            product.categories = "5b6367f7925ca0286bb5f10c";           
+            product.save();           
 
-
-           product.title = req.body.title;
-           product.desc = req.body.desc;
-           if(category){
-               product.categories = category;
-           }
-           product.save();
-
-           res.json(product);
-
-       }).catch(next);
-
-
-
+            res.json(product);
+        });
     })
     .delete((req,res)=>{
         Product.findById(req.params.productId, (err, product) => {
